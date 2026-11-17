@@ -234,7 +234,7 @@ private fun MokhtasatMapScreen(onBack: () -> Unit) {
                             target = LatLng(lat, lon)
                             panelExpanded = false
                         }
-                    }, Modifier.fillMaxWidth().height(52.dp), shape = RoundedCornerShape(15.dp)) {
+                    }, modifier = Modifier.fillMaxWidth().height(52.dp), shape = RoundedCornerShape(15.dp)) {
                         Icon(Icons.Default.LocationSearching, null); Spacer(Modifier.width(8.dp))
                         Text("نمایش مقصد روی نقشه", fontWeight = FontWeight.Bold)
                     }
@@ -261,7 +261,7 @@ private fun MokhtasatMapScreen(onBack: () -> Unit) {
                                     info = "خطا در دانلود نقشه: " + errorMessage
                                 }
                             })
-                    }, Modifier.fillMaxWidth(), shape = RoundedCornerShape(15.dp)) {
+                    }, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(15.dp)) {
                         if (downloading) CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
                         else Icon(Icons.Default.DownloadForOffline, null)
                         Spacer(Modifier.width(8.dp)); Text("دانلود محدوده برای استفاده آفلاین")
