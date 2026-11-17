@@ -10,8 +10,8 @@ android {
         applicationId = "ir.technologist.mokhtasat"
         minSdk = 26
         targetSdk = 35
-        versionCode = 4
-        versionName = "0.4.0"
+        versionCode = 5
+        versionName = "0.5.0"
     }
     buildFeatures { compose = true }
     compileOptions {
@@ -27,5 +27,11 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material:material-icons-extended")
+    implementation("androidx.compose.ui:ui-viewbinding")
+    implementation("androidx.appcompat:appcompat:1.7.0")
+    implementation("neshan-android-sdk:mobile-sdk:1.0.1")
+    implementation("neshan-android-sdk:services-sdk:1.0.0")
+    implementation("neshan-android-sdk:common-sdk:0.0.2")
+    implementation("com.google.android.gms:play-services-location:17.0.0")
     debugImplementation("androidx.compose.ui:ui-tooling")
 }
