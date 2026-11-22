@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -16,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -75,7 +77,7 @@ private fun WelcomeScreen(onStart: () -> Unit) {
                 contentAlignment = Alignment.Center
             ) {
                 Box(Modifier.size(148.dp).background(Color(0xFFE30613), RoundedCornerShape(34.dp)), contentAlignment = Alignment.Center) {
-                    Text("☾", color = Color.White, style = MaterialTheme.typography.displayLarge, fontWeight = FontWeight.Black)
+                    CrescentMark(Modifier.fillMaxSize().padding(5.dp), Color(0xFFE30613))
                 }
             }
             Spacer(Modifier.height(28.dp))
@@ -115,6 +117,20 @@ private fun WelcomeScreen(onStart: () -> Unit) {
 }
 
 @Composable
+private fun CrescentMark(modifier: Modifier, backgroundColor: Color) {
+    Canvas(modifier) {
+        val radius = size.minDimension * 0.46f
+        val center = Offset(size.width * 0.47f, size.height * 0.52f)
+        drawCircle(color = Color.White, radius = radius, center = center)
+        drawCircle(
+            color = backgroundColor,
+            radius = radius * 0.91f,
+            center = Offset(center.x + radius * 0.43f, center.y - radius * 0.16f)
+        )
+    }
+}
+
+@Composable
 private fun FeaturePill(icon: androidx.compose.ui.graphics.vector.ImageVector, label: String) {
     Surface(color = Color.White.copy(alpha = 0.12f), shape = RoundedCornerShape(50)) {
         Row(Modifier.padding(horizontal = 12.dp, vertical = 9.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -141,7 +157,7 @@ private fun AppHeader(title: String, subtitle: String, onBack: () -> Unit) {
             Text(subtitle, color = Color(0xFFB9D6D9), style = MaterialTheme.typography.labelSmall)
         }
         Box(Modifier.size(54.dp).background(Color(0xFFE30613), RoundedCornerShape(16.dp)), contentAlignment = Alignment.Center) {
-            Text("☾", color = Color.White, style = MaterialTheme.typography.displaySmall, fontWeight = FontWeight.Black)
+            CrescentMark(Modifier.fillMaxSize().padding(2.dp), Color(0xFFE30613))
         }
     }
 }
