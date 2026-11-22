@@ -75,7 +75,7 @@ private fun WelcomeScreen(onStart: () -> Unit) {
                 contentAlignment = Alignment.Center
             ) {
                 Box(Modifier.size(82.dp).background(Color.White, RoundedCornerShape(26.dp)), contentAlignment = Alignment.Center) {
-                    Icon(Icons.Default.MyLocation, contentDescription = null, tint = Teal, modifier = Modifier.size(48.dp))
+                    Text("☾", color = Color(0xFFE30613), style = MaterialTheme.typography.displayLarge, fontWeight = FontWeight.Black)
                 }
             }
             Spacer(Modifier.height(28.dp))
@@ -141,7 +141,7 @@ private fun AppHeader(title: String, subtitle: String, onBack: () -> Unit) {
             Text(subtitle, color = Color(0xFFB9D6D9), style = MaterialTheme.typography.labelSmall)
         }
         Box(Modifier.size(42.dp).background(Color.White.copy(alpha = 0.13f), RoundedCornerShape(14.dp)), contentAlignment = Alignment.Center) {
-            Icon(Icons.Default.Explore, null, tint = Color(0xFFBCEBE4), modifier = Modifier.size(25.dp))
+            Text("☾", color = Color(0xFFE30613), style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Black)
         }
     }
 }
@@ -188,7 +188,7 @@ private fun MokhtasatMapScreen(onBack: () -> Unit) {
         }
 
         Column(Modifier.align(Alignment.TopCenter).fillMaxWidth().padding(12.dp)) {
-            AppHeader("مختصات یاب", "سامانه موقعیت‌یابی", onBack)
+            AppHeader("مختصات یاب", "هلال احمر شهرستان جوین", onBack)
             Spacer(Modifier.height(8.dp))
             Surface(color = Navy.copy(alpha = 0.92f), shape = RoundedCornerShape(12.dp)) {
                 Row(Modifier.padding(horizontal = 11.dp, vertical = 7.dp), verticalAlignment = Alignment.CenterVertically) {
