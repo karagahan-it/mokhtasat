@@ -71,11 +71,11 @@ private fun WelcomeScreen(onStart: () -> Unit) {
         ) {
             Spacer(Modifier.weight(1f))
             Box(
-                Modifier.size(116.dp).background(Color.White.copy(alpha = 0.12f), RoundedCornerShape(34.dp)),
+                Modifier.size(174.dp).background(Color.White.copy(alpha = 0.10f), RoundedCornerShape(42.dp)),
                 contentAlignment = Alignment.Center
             ) {
-                Box(Modifier.size(82.dp).background(Color.White, RoundedCornerShape(26.dp)), contentAlignment = Alignment.Center) {
-                    Text("☾", color = Color(0xFFE30613), style = MaterialTheme.typography.displayLarge, fontWeight = FontWeight.Black)
+                Box(Modifier.size(148.dp).background(Color(0xFFE30613), RoundedCornerShape(34.dp)), contentAlignment = Alignment.Center) {
+                    Text("☾", color = Color.White, style = MaterialTheme.typography.displayLarge, fontWeight = FontWeight.Black)
                 }
             }
             Spacer(Modifier.height(28.dp))
@@ -140,8 +140,8 @@ private fun AppHeader(title: String, subtitle: String, onBack: () -> Unit) {
             Text(title, color = Color.White, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
             Text(subtitle, color = Color(0xFFB9D6D9), style = MaterialTheme.typography.labelSmall)
         }
-        Box(Modifier.size(42.dp).background(Color.White.copy(alpha = 0.13f), RoundedCornerShape(14.dp)), contentAlignment = Alignment.Center) {
-            Text("☾", color = Color(0xFFE30613), style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Black)
+        Box(Modifier.size(54.dp).background(Color(0xFFE30613), RoundedCornerShape(16.dp)), contentAlignment = Alignment.Center) {
+            Text("☾", color = Color.White, style = MaterialTheme.typography.displaySmall, fontWeight = FontWeight.Black)
         }
     }
 }
