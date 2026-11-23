@@ -196,12 +196,12 @@ private fun MokhtasatMapScreen(onBack: () -> Unit) {
         val contact = senderContact.trim().ifBlank { "ثبت نشده" }
         val timestamp = SimpleDateFormat("yyyy/MM/dd - HH:mm:ss", Locale.getDefault()).format(Date())
         val mapLink = "https://www.openstreetmap.org/?mlat=${point.latitude}&mlon=${point.longitude}#map=16/${point.latitude}/${point.longitude}"
-        return "پیام اضطراری SOS | هلال احمر شهرستان جوین\\n" +
-            "نام ارسال‌کننده: $name\\n" +
-            "شماره/شناسه تماس: $contact\\n" +
-            "عرض جغرافیایی: ${point.latitude}\\n" +
-            "طول جغرافیایی: ${point.longitude}\\n" +
-            "زمان ارسال: $timestamp\\n" +
+        return "پیام اضطراری SOS | هلال احمر شهرستان جوین\n" +
+            "نام ارسال‌کننده: $name\n" +
+            "شماره/شناسه تماس: $contact\n" +
+            "عرض جغرافیایی: ${point.latitude}\n" +
+            "طول جغرافیایی: ${point.longitude}\n" +
+            "زمان ارسال: $timestamp\n" +
             "موقعیت روی نقشه: $mapLink"
     }
 
