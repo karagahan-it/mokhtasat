@@ -213,7 +213,9 @@ private fun MokhtasatMapScreen(onBack: () -> Unit) {
             if (message != null && sosRecipient.trim().isNotBlank()) {
                 try {
                     @Suppress("DEPRECATION")
-                    SmsManager.getDefault().sendTextMessage(sosRecipient.trim(), null, message, null, null)
+                    val smsManager = SmsManager.getDefault()
+                    val parts = smsManager.divideMessage(message)
+                    smsManager.sendMultipartTextMessage(sosRecipient.trim(), null, parts, null, null)
                     sosStatus = "درخواست ارسال پیامک به برنامه پیامک‌رسان تحویل شد؛ رسیدن پیام تأیید نشده است."
                 } catch (e: Exception) {
                     sosStatus = "ارسال پیامک ناموفق بود: ${e.localizedMessage ?: "خطای نامشخص"}"
@@ -312,7 +314,9 @@ private fun MokhtasatMapScreen(onBack: () -> Unit) {
                                     if (message != null) {
                                         try {
                                             @Suppress("DEPRECATION")
-                                            SmsManager.getDefault().sendTextMessage(sosRecipient.trim(), null, message, null, null)
+                                            val smsManager = SmsManager.getDefault()
+                                            val parts = smsManager.divideMessage(message)
+                                            smsManager.sendMultipartTextMessage(sosRecipient.trim(), null, parts, null, null)
                                             sosStatus = "درخواست ارسال پیامک ثبت شد؛ تحویل پیام به گیرنده هنوز تأیید نشده است."
                                         } catch (e: Exception) {
                                             sosStatus = "ارسال پیامک ناموفق بود: ${e.localizedMessage ?: "خطای نامشخص"}"
