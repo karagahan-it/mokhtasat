@@ -1,6 +1,16 @@
 package ir.technologist.mokhtasat
 
 import android.os.Bundle
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.telephony.SmsManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -174,6 +184,45 @@ private fun MokhtasatMapScreen(onBack: () -> Unit) {
     var panelExpanded by remember { mutableStateOf(true) }
     var downloading by remember { mutableStateOf(false) }
     var mapReady by remember { mutableStateOf(false) }
+    var sosExpanded by remember { mutableStateOf(false) }
+    var senderName by remember { mutableStateOf("") }
+    var senderContact by remember { mutableStateOf("") }
+    var sosRecipient by remember { mutableStateOf("") }
+    var sosStatus by remember { mutableStateOf("") }
+
+    fun buildSosMessage(): String? {
+        val point = target ?: return null
+        val name = senderName.trim().ifBlank { "ثبت نشده" }
+        val contact = senderContact.trim().ifBlank { "ثبت نشده" }
+        val timestamp = SimpleDateFormat("yyyy/MM/dd - HH:mm:ss", Locale.getDefault()).format(Date())
+        val mapLink = "https://www.openstreetmap.org/?mlat=${point.latitude}&mlon=${point.longitude}#map=16/${point.latitude}/${point.longitude}"
+        return "پیام اضطراری SOS | هلال احمر شهرستان جوین\\n" +
+            "نام ارسال‌کننده: $name\\n" +
+            "شماره/شناسه تماس: $contact\\n" +
+            "عرض جغرافیایی: ${point.latitude}\\n" +
+            "طول جغرافیایی: ${point.longitude}\\n" +
+            "زمان ارسال: $timestamp\\n" +
+            "موقعیت روی نقشه: $mapLink"
+    }
+
+    val smsPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) {
+            val message = buildSosMessage()
+            if (message != null && sosRecipient.trim().isNotBlank()) {
+                try {
+                    @Suppress("DEPRECATION")
+                    SmsManager.getDefault().sendTextMessage(sosRecipient.trim(), null, message, null, null)
+                    sosStatus = "درخواست ارسال پیامک به برنامه پیامک‌رسان تحویل شد؛ رسیدن پیام تأیید نشده است."
+                } catch (e: Exception) {
+                    sosStatus = "ارسال پیامک ناموفق بود: ${e.localizedMessage ?: "خطای نامشخص"}"
+                }
+            }
+        } else {
+            sosStatus = "مجوز ارسال پیامک داده نشد. می‌توانید از اشتراک‌گذاری استفاده کنید."
+        }
+    }
 
     Box(Modifier.fillMaxSize().background(Color(0xFFF3F6F8))) {
         AndroidView(
@@ -228,6 +277,76 @@ private fun MokhtasatMapScreen(onBack: () -> Unit) {
                             Text("مختصات را جداگانه وارد کنید", style = MaterialTheme.typography.bodySmall, color = Muted)
                         }
                         IconButton(onClick = { panelExpanded = false }) { Icon(Icons.Default.ExpandMore, "جمع کردن پنل", tint = Teal) }
+                    }
+                    OutlinedButton(
+                        onClick = { sosExpanded = !sosExpanded },
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(14.dp),
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFFE30613))
+                    ) {
+                        Icon(Icons.Default.Sos, contentDescription = null)
+                        Spacer(Modifier.width(8.dp))
+                        Text(if (sosExpanded) "بستن پنل SOS" else "ارسال موقعیت اضطراری SOS", fontWeight = FontWeight.Bold)
+                    }
+                    if (sosExpanded) {
+                        Text("اطلاعات فرستنده و شماره مرکز دریافت‌کننده را وارد کنید.", color = Muted, style = MaterialTheme.typography.bodySmall)
+                        OutlinedTextField(senderName, { senderName = it }, Modifier.fillMaxWidth(),
+                            label = { Text("نام و نام خانوادگی ارسال‌کننده") }, singleLine = true)
+                        OutlinedTextField(senderContact, { senderContact = it }, Modifier.fillMaxWidth(),
+                            label = { Text("شماره تماس / شناسه امدادگر") }, singleLine = true,
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone))
+                        OutlinedTextField(sosRecipient, { sosRecipient = it }, Modifier.fillMaxWidth(),
+                            label = { Text("شماره مقصد پیامک اضطراری") }, singleLine = true,
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone))
+                        Text(
+                            if (target == null) "ابتدا مختصات را وارد و روی نقشه نمایش دهید تا در پیام SOS درج شود."
+                            else "مختصات انتخاب‌شده: ${target!!.latitude}, ${target!!.longitude}",
+                            color = if (target == null) MaterialTheme.colorScheme.error else Muted,
+                            style = MaterialTheme.typography.labelSmall
+                        )
+                        Button(
+                            enabled = target != null && sosRecipient.isNotBlank(),
+                            onClick = {
+                                if (ContextCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED) {
+                                    val message = buildSosMessage()
+                                    if (message != null) {
+                                        try {
+                                            @Suppress("DEPRECATION")
+                                            SmsManager.getDefault().sendTextMessage(sosRecipient.trim(), null, message, null, null)
+                                            sosStatus = "درخواست ارسال پیامک ثبت شد؛ تحویل پیام به گیرنده هنوز تأیید نشده است."
+                                        } catch (e: Exception) {
+                                            sosStatus = "ارسال پیامک ناموفق بود: ${e.localizedMessage ?: "خطای نامشخص"}"
+                                        }
+                                    }
+                                } else {
+                                    smsPermissionLauncher.launch(Manifest.permission.SEND_SMS)
+                                }
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE30613)),
+                            shape = RoundedCornerShape(14.dp)
+                        ) {
+                            Icon(Icons.Default.Sms, null); Spacer(Modifier.width(8.dp)); Text("ارسال مستقیم پیامک SOS")
+                        }
+                        OutlinedButton(
+                            enabled = target != null,
+                            onClick = {
+                                val message = buildSosMessage()
+                                if (message != null) {
+                                    val intent = Intent(Intent.ACTION_SEND).apply {
+                                        type = "text/plain"
+                                        putExtra(Intent.EXTRA_SUBJECT, "موقعیت اضطراری SOS")
+                                        putExtra(Intent.EXTRA_TEXT, message)
+                                    }
+                                    context.startActivity(Intent.createChooser(intent, "ارسال موقعیت اضطراری با"))
+                                }
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(14.dp)
+                        ) {
+                            Icon(Icons.Default.Share, null); Spacer(Modifier.width(8.dp)); Text("اشتراک‌گذاری SOS")
+                        }
+                        if (sosStatus.isNotBlank()) Text(sosStatus, color = Muted, style = MaterialTheme.typography.labelSmall)
                     }
                     OutlinedTextField(latitude, { latitude = it; error = "" }, Modifier.fillMaxWidth(),
                         label = { Text("عرض جغرافیایی") }, placeholder = { Text("36.123456") },
